@@ -1,0 +1,21 @@
+# Compiled output
+out/
+target/
+*.class
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Maven
+.mvn/
+*.iml
+
+# IntelliJ / Cursor / VSCode
+.idea/
+.vscode/
+*.iws
+*.ipr
+
+# Logs
+*.log

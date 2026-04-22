@@ -1,0 +1,56 @@
+.root {
+    -fx-background-color: #F5F5F7; /* Apple-style soft gray */
+    -fx-font-family: "Segoe UI", "Inter", sans-serif;
+}
+
+/* Rounded White Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 5);
+    -fx-padding: 20;
+}
+
+/* Primary Dark Buttons */
+.button-primary {
+    -fx-background-color: #1D1D1F;
+    -fx-text-fill: white;
+    -fx-background-radius: 12;
+    -fx-font-weight: bold;
+    -fx-padding: 12 25;
+    -fx-cursor: hand;
+}
+.button-primary:hover {
+    -fx-background-color: #323234;
+}
+
+/* Filter Chips */
+.chip {
+    -fx-background-color: #E8E8ED;
+    -fx-background-radius: 20;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+.chip:selected {
+    -fx-background-color: #1D1D1F;
+    -fx-text-fill: white;
+}
+
+/* Typography */
+.heading {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1D1D1F;
+}
+.subheading {
+    -fx-font-size: 14px;
+    -fx-text-fill: #86868B;
+}
+
+/* Search Bar */
+.search-bar {
+    -fx-background-color: #E8E8ED;
+    -fx-background-radius: 12;
+    -fx-padding: 10 15;
+    -fx-prompt-text-fill: #86868B;
+}
