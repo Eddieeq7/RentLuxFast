@@ -23,23 +23,36 @@ public class TrackerView extends VBox {
         card.setPadding(new Insets(30));
 
         // All values come from real Booking, Member, and LuxuryVehicle objects
+        Label availStatus = new Label("Vehicle Status: " + (booking.getVehicle().isAvailable() ? "Available" : "Unavailable"));
+        availStatus.setStyle("-fx-font-weight: bold; -fx-text-fill: " + (booking.getVehicle().isAvailable() ? "#28A745" : "#DC3545") + ";");
+
         card.getChildren().addAll(
             createRow("Member",     booking.getCustomer().getName()),
             createRow("Membership", booking.getCustomer().getClass().getSimpleName()),
             createRow("Vehicle",    booking.getVehicle().getVehicleInfo()),
             createRow("Duration",   booking.getRentalHours() + " hour(s)"),
             new Separator(),
-            createRow("Total Cost", "$" + String.format("%.2f", booking.getFinalCost()))
+            createRow("Total Cost", "$" + String.format("%.2f", booking.getFinalCost())),
+            availStatus
         );
 
         Button doneBtn = new Button("Back to Fleet");
         doneBtn.getStyleClass().add("button-primary");
-        doneBtn.setOnAction(e -> {
+        doneBtn.setOnAction(e -> NavigationManager.getInstance().showFleetBrowser());
+
+        Button returnBtn = new Button("Return Car");
+        returnBtn.setStyle("-fx-background-color: #E8E8ED; -fx-background-radius: 12; -fx-padding: 10 20; -fx-cursor: hand;");
+        returnBtn.setOnAction(e -> {
             booking.returnVehicle();
-            NavigationManager.getInstance().showFleetBrowser();
+            availStatus.setText("Vehicle Status: Available");
+            availStatus.setStyle("-fx-font-weight: bold; -fx-text-fill: #28A745;");
+            returnBtn.setDisable(true);
         });
 
-        this.getChildren().addAll(title, card, doneBtn);
+        HBox actions = new HBox(15, returnBtn, doneBtn);
+        actions.setAlignment(javafx.geometry.Pos.CENTER);
+
+        this.getChildren().addAll(title, card, actions);
     }
 
     private HBox createRow(String label, String value) {

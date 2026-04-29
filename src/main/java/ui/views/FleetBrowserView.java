@@ -6,9 +6,14 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import ui.components.VehicleCard;
 import vehicles.*;
+import booking.Booking;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FleetBrowserView extends ScrollPane {
+
+    public static final Map<String, Booking> activeBookings = new HashMap<>();
 
     private static final List<LuxuryVehicle> allVehicles = List.of(
         new Supercar("V1", "Lamborghini", "Huracan",   "GOLD",     202),
@@ -84,7 +89,7 @@ public class FleetBrowserView extends ScrollPane {
                 || (filter.equals("Exotic")   && v instanceof Exotic);
 
             if (matchesSearch && matchesFilter) {
-                grid.getChildren().add(new VehicleCard(v));
+                grid.getChildren().add(new VehicleCard(v, activeBookings.get(v.getVehicleId())));
             }
         }
         if (grid.getChildren().isEmpty()) {

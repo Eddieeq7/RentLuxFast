@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import vehicles.LuxuryVehicle;
 import members.GoldMember;
 import ui.components.VehicleCard;
+import ui.views.FleetBrowserView;
 import members.PlatinumMember;
 import members.Member;
 import booking.Booking;
@@ -115,11 +116,53 @@ public class VehicleDetailView extends VBox {
                 alert.showAndWait();
                 return;
             }
+
             Member member = platinumBtn.isSelected()
                 ? new PlatinumMember("M002", "Member")
                 : new GoldMember("M001", "Member");
-            Booking booking = new Booking(member, vehicle, selectedHours[0], "");
-            NavigationManager.getInstance().showTracker(booking);
+
+            double base = vehicle.calculateRentalCost(selectedHours[0]);
+            double discount = member.getDiscount(base);
+            double total = base - discount;
+
+            // Swap form for a receipt summary
+            bookingForm.getChildren().clear();
+
+            Label receiptTitle = new Label("Booking Summary");
+            receiptTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+            Separator sep1 = new Separator();
+
+            bookingForm.getChildren().addAll(
+                receiptTitle,
+                sep1,
+                receiptRow("Vehicle",    vehicle.getBrand() + " " + vehicle.getModel()),
+                receiptRow("Type",       vehicle.getClass().getSimpleName()),
+                receiptRow("Membership", member.getClass().getSimpleName()),
+                receiptRow("Duration",   selectedHours[0] + " hour(s)"),
+                receiptRow("Base Price", "$" + String.format("%.2f", base)),
+                receiptRow("Discount",   "-$" + String.format("%.2f", discount)),
+                new Separator(),
+                receiptRow("Total",      "$" + String.format("%.2f", total))
+            );
+
+            // Style the total row bold
+            if (bookingForm.getChildren().get(bookingForm.getChildren().size() - 1) instanceof HBox totalRow) {
+                totalRow.getChildren().forEach(node -> {
+                    if (node instanceof Label lbl) lbl.setStyle("-fx-font-weight: bold; -fx-font-size: 15px;");
+                });
+            }
+
+            Button confirmBtn = new Button("Confirm Booking");
+            confirmBtn.getStyleClass().add("button-primary");
+            confirmBtn.setMaxWidth(Double.MAX_VALUE);
+            confirmBtn.setOnAction(ev -> {
+                Booking booking = new Booking(member, vehicle, selectedHours[0], "");
+                FleetBrowserView.activeBookings.put(vehicle.getVehicleId(), booking);
+                NavigationManager.getInstance().showFleetBrowser();
+            });
+
+            bookingForm.getChildren().add(confirmBtn);
         });
 
         bookingForm.getChildren().addAll(
@@ -128,6 +171,18 @@ public class VehicleDetailView extends VBox {
         rightSide.getChildren().addAll(vehicleTitle, specs, bookingForm);
         content.getChildren().addAll(heroImage, rightSide);
         this.getChildren().addAll(backBtn, content);
+    }
+
+    private HBox receiptRow(String label, String value) {
+        HBox row = new HBox();
+        Label l = new Label(label);
+        l.setStyle("-fx-text-fill: #86868B; -fx-min-width: 110px;");
+        Label v = new Label(value);
+        v.setStyle("-fx-font-weight: bold;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        row.getChildren().addAll(l, spacer, v);
+        return row;
     }
 
     private VBox createInfoCard(String label, String value) {
