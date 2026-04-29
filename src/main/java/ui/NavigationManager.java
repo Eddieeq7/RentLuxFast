@@ -3,6 +3,7 @@ package ui;
 import javafx.scene.layout.StackPane;
 import ui.views.*;
 import vehicles.LuxuryVehicle;
+import booking.Booking;
 
 public class NavigationManager {
     private final StackPane container;
@@ -23,15 +24,7 @@ public class NavigationManager {
         container.getChildren().setAll(new VehicleDetailView(vehicle));
     }
 
-    public void showLogin(Runnable onLoginSuccess) {
-        container.getChildren().setAll(new LoginView(onLoginSuccess));
-    }
-
-    public void showTracker(Object booking) {
+    public void showTracker(Booking booking) {
         container.getChildren().setAll(new TrackerView(booking));
-    }
-
-    public void showReceipt(Object booking) {
-        container.getChildren().setAll(new ReceiptView(booking));
     }
 }

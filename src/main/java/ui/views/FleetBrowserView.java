@@ -10,7 +10,7 @@ import java.util.List;
 
 public class FleetBrowserView extends ScrollPane {
 
-    private final List<LuxuryVehicle> allVehicles = List.of(
+    private static final List<LuxuryVehicle> allVehicles = List.of(
         new Supercar("V1", "Lamborghini", "Huracan",   "GOLD",     202),
         new LuxurySUV("V2", "Rolls Royce", "Cullinan", "STANDARD", 5),
         new Exotic("V3", "Bugatti",       "Chiron",    "PLATINUM", "France"),

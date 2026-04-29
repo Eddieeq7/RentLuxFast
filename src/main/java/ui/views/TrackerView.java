@@ -5,59 +5,49 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import ui.NavigationManager;
+import booking.Booking;
 
 public class TrackerView extends VBox {
-    public TrackerView(Object booking) {
+    public TrackerView(Booking booking) {
         this.setPadding(new Insets(40));
         this.setSpacing(30);
         this.getStyleClass().add("root");
         this.setAlignment(Pos.TOP_CENTER);
 
-        Label title = new Label("Delivery Tracking");
+        Label title = new Label("Booking Confirmed");
         title.getStyleClass().add("heading");
 
-        VBox statusCard = new VBox(20);
-        statusCard.getStyleClass().add("card");
-        statusCard.setMaxWidth(600);
+        VBox card = new VBox(15);
+        card.getStyleClass().add("card");
+        card.setMaxWidth(500);
+        card.setPadding(new Insets(30));
 
-        HBox steps = new HBox(40);
-        steps.setAlignment(Pos.CENTER);
-        steps.getChildren().addAll(
-            createStatusStep("Pending", true),
-            createStatusStep("Driver Assigned", true),
-            createStatusStep("En Route", false),
-            createStatusStep("Delivered", false)
+        // All values come from real Booking, Member, and LuxuryVehicle objects
+        card.getChildren().addAll(
+            createRow("Member",     booking.getCustomer().getName()),
+            createRow("Membership", booking.getCustomer().getClass().getSimpleName()),
+            createRow("Vehicle",    booking.getVehicle().getVehicleInfo()),
+            createRow("Duration",   booking.getRentalHours() + " hour(s)"),
+            new Separator(),
+            createRow("Total Cost", "$" + String.format("%.2f", booking.getFinalCost()))
         );
 
-        Separator s = new Separator();
-        
-        GridPane info = new GridPane();
-        info.setHgap(30);
-        info.setVgap(15);
-        info.add(new Label("Driver"), 0, 0);
-        info.add(new Label("Marco Silva"), 1, 0);
-        info.add(new Label("Vehicle"), 0, 1);
-        info.add(new Label("Lamborghini Huracan"), 1, 1);
-        info.add(new Label("ETA"), 0, 2);
-        info.add(new Label("15 mins"), 1, 2);
+        Button doneBtn = new Button("Back to Fleet");
+        doneBtn.getStyleClass().add("button-primary");
+        doneBtn.setOnAction(e -> {
+            booking.returnVehicle();
+            NavigationManager.getInstance().showFleetBrowser();
+        });
 
-        statusCard.getChildren().addAll(steps, s, info);
-
-        Button receiptBtn = new Button("View Receipt");
-        receiptBtn.getStyleClass().add("button-primary");
-        receiptBtn.setOnAction(e -> NavigationManager.getInstance().showReceipt(null));
-
-        this.getChildren().addAll(title, statusCard, receiptBtn);
+        this.getChildren().addAll(title, card, doneBtn);
     }
 
-    private VBox createStatusStep(String label, boolean completed) {
-        VBox box = new VBox(5);
-        box.setAlignment(Pos.CENTER);
-        Label dot = new Label(completed ? "●" : "○");
-        dot.setStyle("-fx-font-size: 24px; -fx-text-fill: " + (completed ? "#28A745" : "#E8E8ED") + ";");
+    private HBox createRow(String label, String value) {
+        HBox row = new HBox();
         Label l = new Label(label);
-        l.setStyle("-fx-font-size: 10px; -fx-text-fill: " + (completed ? "#1D1D1F" : "#86868B") + ";");
-        box.getChildren().addAll(dot, l);
-        return box;
+        l.setStyle("-fx-font-weight: bold; -fx-min-width: 120px;");
+        Label v = new Label(value);
+        row.getChildren().addAll(l, v);
+        return row;
     }
 }
